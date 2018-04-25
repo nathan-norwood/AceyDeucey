@@ -1,0 +1,1 @@
+INDEX VERSION 1.129+C:\Users\natha\Documents\Johns Hopkins\Foundations of Software Engineering\Clue-Less\.metadata\.plugins\org.eclipse.jdt.core

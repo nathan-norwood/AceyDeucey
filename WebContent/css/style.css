@@ -1,0 +1,145 @@
+#header {
+	font-family: "Arial Black", "Arial Bold", Gadget, sans-serif;
+	font-size: 80px;
+	font-style: normal;
+	font-variant: small-caps;
+	text-align: center;
+	width:100%;
+	color: white;
+	background-color: #15260F;
+}
+#gameSelect {
+	background-image:url(../images/BackgroundBoard.jpg);
+	height: 100vh;
+
+}
+button{
+	background-color: #69686B;
+}
+#welcome {
+
+}
+.wtext{
+	color: white;
+}
+
+#availableGames{
+	
+}
+.mainpage{
+	width: 100%;
+	height: 100%;
+	padding: 50px 50px 50px 50px;
+	font-family: "Arial Black", "Arial Bold", Gadget, sans-serif;
+	font-variant: normal;
+	
+	text-align: center;
+	border-style:solid;
+	border-color: #15260F;
+	background-size: cover;
+}
+.maincontent{
+	border-style:solid;
+	border-color:white;
+	border-width: 10px;
+	padding: 50px 50px 50px 50px;
+	background: rgba(0,0,0,0.6);
+	width:75%;
+	margin:auto;
+}
+#gameLobby{
+	
+	background-image:url(../images/lobby3.jpg);
+	height: 100vh;
+}
+#gameDetails {
+
+}
+#gameDashboard {
+	width:100%;
+	border-style:solid;	
+	background-color :#9bd59f
+}
+#detectiveNotes{
+	width: 100%;
+}
+#cards{
+	width: 100%;
+	
+
+}
+#turn{
+	width: 100%;
+}
+
+#messageBoard{
+	overflow-y:auto;
+	height: 60px;
+	width: 100%;
+	text-align: left
+}
+#disrpoveSuggestion{
+	width: 100%;
+}
+
+#gameBoard{
+	width: 100%;
+	text-align: left;
+	/*background-image:url(../images/Board.jpg);
+	background-size: 100% auto;*/
+	
+}
+#hourGlass{
+	height: 40%;
+	width: 40%;
+}
+.container{
+	display:flex;
+	flex-direction:row;
+}
+.sidecomponents{
+	flex-grow: 1;
+	flex-basis: 25%;
+	display:flex;
+	flex-direction:column;
+	text-align:left;
+	padding: 20px;
+	border-style:solid;
+	border-color: white;
+	background-color: #15260F;
+	color : #f0f0f0;
+	background: rgba(0,0,0,0.6);
+}
+.midcomponents{
+	flex-grow: 2;
+	flex-basis: 50%;
+	display:flex;
+	flex-direction:column;
+	border-style:solid;
+	border-color: #15260F;
+}
+.component{
+	flex-grow:1;
+	background-color: #15260F ;
+	color : #f0f0f0;;
+	border-style:solid;
+	border-color: white;
+	background: rgba(0,0,0,0.6);
+	
+}
+.cardImg{
+	height: 110%;
+	width: 110%;
+	
+}
+
+.boardSelect{
+	color: #15260F;
+	backgournd-color: #9bd59f;
+}
+
+#gameOver{
+	background-image:url(../images/BackgroundBoard.jpg);
+	height: 100vh;
+}
+

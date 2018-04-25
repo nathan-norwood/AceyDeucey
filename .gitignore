@@ -1,0 +1,6 @@
+.classpath
+.project
+build/classes/game/*.class
+build/classes/servlet/*.class
+build/classes/socket/*.class
+/bin/

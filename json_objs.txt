@@ -1,0 +1,29 @@
+JSON Objects:
+TODO: preload the HTML page with "ID/Familar Name" data for all cards - these IDs are shared with game objects too - that way you donned to send as much data back and forth with the server for the MSGs. Just look up based on the ID.
+To User:
+{ type: CARDS, cards:[ 5, 6 ] }
+{ type: SETUP, games: [ {name: "My Game", id: 1}, {name: "My Game2", id: 2} ], suspects:[{id: 1, name: "Scarlet"}, ...],weapons:[{id: 6, name: "Knife"}, ...] , rooms:[{id: 12, name: "Kitchen"}, ...]  }
+{ type: SUSPECTS, suspects:[ 5, 6 ] }
+{ type: AVAIL_SUSPECTS, suspects[5,6]}
+{ type: LOBBY, {gameId: 0, gameName: name, isHost: true, suspects : [{id: 27, name :"Ms. Scarlet"}]}
+{ type: TURN, options:{ locations:[{id:1, name:"H1", room:false}, ...], suggestion:true} //accusation is always true
+{ type: TURN2, suspect:1,  notice:"" } //accusation is always available, suspect =-1 means no one can prove.
+{ type: BOARD_STATE, board:[{r_id: 1, type:"weapon", id:5}, ... {r_id:4, type:"syspect", id: 27}, ...] }
+{ type: MSG, suspect: 1, msg: "Text of the msg" } //if suspect is included, prepend to message.
+{ type: DISPROVE,  suggestion:{suspect: 2, weapon:5, room:12}  } 
+{ type: ENDGAME, suspect: 1, msg: "Text of the msg" } //if suspect is included, prepend to message.
+
+
+From User:
+{ type: GET_SETUP }
+{ type: CREATE, name: "Game Name", suspect: 5 }
+{ type: JOIN, game_id: 2 }
+{ type:	GET_SUSPECTS, suspect: 5, game_id: 2 }
+{ type: START, game: 0}
+{ type: TURN, {location : 3, game:1}
+{ type: TURN, selection:{ location: 3, suggestion:{suspect: 2, weapon:5, room:12}  , game_id: 2  }
+{ type: TURN, selection:{ suggestion:{suspect: 2, weapon:5, room:12}  , game_id: 2  } //MOVE w/o a location is just a suggestion
+{ type: DISPROVE, game_id: 2, card: 6 }
+{ type: ACCUSE, game_id: 2, accusation: [3, 12, 6] }  // if array is empty, assume they did not accuse.
+
+

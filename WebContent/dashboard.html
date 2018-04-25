@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html ng-app="clueless">
+<head>
+<meta charset="UTF-8">
+<title>Clue-Less Dashboard</title>
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+
+</head>
+<body ng-controller="ctrlr">
+
+	<script src="scripts/angular.min.js" type="text/javascript"></script>
+	<script src="scripts/angular-cookies.js" type="text/javascript"></script>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="scripts/bootstrap.min.js" type="text/javascript"></script>
+	<script src="scripts/ui-bootstrap-tpls-2.5.0.min.js"></script>
+	<script src="scripts/angular-websocket.js" type="text/javascript"></script>
+	<script src="scripts/clueless-controller.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#createSubmit').click(function() {
+				$('#newGameModal').modal('hide');
+			});
+
+			$('#joinSubmit').click(function() {
+				$('#joinGameModal').modal('hide');
+			});
+
+		});
+	</script>
+	<div id="header" ng-show="!(game_id!= undefined && !game_in_lobby)">Clue-Less</div>
+
+	<div id="gameSelect"
+		ng-show="game_id == undefined && !game_in_Lobby && end_game == undefined"
+		class="mainpage">
+		<div id="welcome" class="maincontent">
+			<h1 class="wtext">Welcome to Clue-Less!</h1>
+			<p class="wtext">Please select from the list of available games
+				or create a new one.</p>
+			<div ng-show="games.length>0">
+				<br /> <label class="wtext">Available Games:</label>
+				<form ng-submit="getAvailableSuspects()">
+					<div ng-repeat="g in games">
+						<input type="radio" name="select_game" ng-model="selected_game.id"
+							value="{{g.id}}" /> <label class="wtext">{{g.name}}</label>
+					</div>
+
+
+					<button type="submit" class="btn btn-primary btn-lg"
+						style="background-color: #69686B; border-color: #404042;"
+						ng-disabled="!selected_game.id" data-toggle="modal"
+						data-target="#joinGameModal">Join Game</button>
+				</form>
+
+				<div id="joinGameModal" class="modal fade" role="dialog">
+					<div class="modal-dialog">
+
+						<!-- Modal content-->
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h4 class="modal-title">Join Game</h4>
+							</div>
+							<div class="modal-body">
+								<form ng-submit="joinGame(suspect)" onsubmit=>
+									<label>Choose Suspect: </label><select ng-model="suspect"
+										ng-options="s.id as s.name for s in avail_suspects"></select>
+									<button id="joinSubmit" type="submit" class="btn btn-success"
+										ng-disabled="!suspect">Join</button>
+
+								</form>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div ng-show="games.length==0" class="wtext" style="font-size: 20px;">
+				Oh no! There are no open games!<br /> <br />
+			</div>
+
+			<br />
+			<button type="button" class="btn btn-primary btn-lg"
+				style="background-color: #69686B; border-color: #404042;"
+				data-toggle="modal" data-target="#newGameModal">Create New
+				Game</button>
+			<div id="newGameModal" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Create New Game</h4>
+						</div>
+						<div class="modal-body">
+							<form ng-submit="createGame(game_name, suspect)">
+								<table>
+									<tr>
+										<td><label>Name of Game: </label></td>
+										<td><input type="text" ng-model="game_name"><br>
+											<label></td>
+									</tr>
+									<tr>
+										<td>Your Character:</td>
+										<td></label><select ng-model="suspect"
+											ng-options="s.id as s.name for s in suspects"></select></td>
+									</tr>
+								</table>
+								<br> <br>
+								<button id="createSubmit" type="submit" class="btn btn-success">Create</button>
+							</form>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+
+
+		</div>
+	</div>
+	<div id="gameLobby" ng-show="game_in_lobby && game_id != undefined"
+		class="mainpage">
+		<div id="gameDetails" class="maincontent wtext">
+			<h1>Welcome to the Lobby!</h1>
+			<h3>Current Game: {{game_name}}</h3>
+			<div ng-show="!player_is_host">
+				<p>You must wait for the host player to start the game...</p>
+			</div>
+
+			<h3>Suspects in the Lobby:</h3>
+			<div ng-repeat="s in suspects_in_lobby">
+				{{s.name}}<br />
+			</div>
+
+			<div ng-show="player_is_host">
+				<button type="button" class="btn btn-success"
+					ng-disabled="suspects_in_lobby.length < 2" ng-click="startGame()">Start
+					Game</button>
+			</div>
+		</div>
+
+
+
+	</div>
+	<div id="gameDashboard" class="mainpage" style="padding: 20px;"
+		ng-show="game_id!= undefined &&  !game_in_lobby">
+		<h1>Dashboard for Game: {{game_name}}</h1>
+		<div class="container">
+			<div class="sidecomponents">
+				<div id=playerSuspect>
+					<p style="text-align: center;">My Character:
+						{{current_suspect.name}}</p>
+				</div>
+				<div id="cards">
+					<p style="text-align: center;">My Cards</p>
+					<div class="row">
+
+
+						<div ng-repeat="c in cards">
+							<div class="clearfix" ng-if="$index % 2 == 0"></div>
+							<div class="col-sm-5">
+								<img ng-src="{{c.img}}" class="cardImg" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="midcomponents">
+
+				<div class="component">
+					<div id="messageBoard">
+						<div ng-repeat="m in msgs | reverse">{{m}}</div>
+					</div>
+					<div id="gameBoard">
+						<canvas id="canvas"></canvas>
+					</div>
+				</div>
+
+				<!-- Not a modal yet -->
+				<div class="component">
+					<div id="turn" ng-show="is_turn">
+						<p>It's your Turn! Choose Your Move</p>
+						<div id="firstTurnOptions" ng-show="options != undefined">
+
+							<form ng-submit="getMove()">
+								<div ng-show=options.suggestion>
+									<input type="radio" name="move" ng-model="move_chosen.id"
+										value="-1">Make Suggestion in {{chosen_location.name}}
+								</div>
+								<div ng-repeat="l in options.locations">
+
+									<input type="radio" name="move" ng-model="move_chosen.id"
+										value="{{l.id}}" />Move To {{l.name}} <br>
+								</div>
+								<input type="radio" name="move" ng-model="move_chosen.id"
+									value="-2">Make Accusation <br>
+									<br>
+								<button type="submit" class="btn btn-success">Submit</button>
+							</form>
+
+							<div id="makeSuggestion" ng-show="making_suggestion">
+								<p>Make Suggestion</p>
+								<p>Room: {{chosen_location.name}}
+								<form ng-submit="submitMove(suspect, weapon)">
+									<label>Suspect: </label><select ng-model="suspect"
+										ng-options="s.id as s.name for s in suspects"
+										class="boardSelect"></select> <label>Weapon: </label><select
+										ng-model="weapon" ng-options="w.id as w.name for w in weapons"
+										class="boardSelect"></select>
+
+									<br>
+									<button type="submit" class="button">Make Suggestion</button>
+								</form>
+							</div>
+						</div>
+						<div ng-show="move_response != undefined">
+							{{move_response}}<br>
+							<div ng-show="move_response == 'Waiting for other players to disprove'">
+							 <img id = "hourGlass" src="images/hourglass.gif" />
+							</div>
+							<div
+								ng-show="move_response != 'Waiting for other players to disprove'">
+								<button type=button ng-click="endTurn()">End Turn</button>
+								<button type=button ng-click="makeAccusation()">Make
+									Accusation</button>
+							</div>
+
+						</div>
+
+						<div ng-show="making_accusation">
+							<form ng-submit="submitAccusation(suspect, weapon, room)">
+								<label>Suspect</label><select ng-model="suspect"
+									ng-options="s.id as s.name for s in suspects"
+									class="boardSelect"></select> <label>Weapon</label><select
+									ng-model="weapon" ng-options="w.id as w.name for w in weapons"
+									class="boardSelect"></select> <label>Room</label><select
+									ng-model="room" ng-options="r.id as r.name for r in rooms"
+									class="boardSelect"></select>
+
+								<br>
+								<button type="submit" class="button">Submit Accusation</button>
+
+							</form>
+						</div>
+
+					</div>
+					<div id="disproveSuggestion"
+						ng-show="suggestion_to_disprove != undefined">
+						<p>Suggestion to Disprove:</p>
+						{{suggestion_to_disprove.suspect.name}},
+						{{suggestion_to_disprove.weapon.name}},
+						{{suggestion_to_disprove.room.name}} <br>
+						<form ng-submit=sendDisprove()>
+							<div ng-show="ways_to_disprove.length > 0">
+								<div ng-repeat="w in ways_to_disprove">
+									<input type="radio" name="disprove"
+										ng-model="disprove_choice.id" value="{{w.id}}" /> {{w.name}}
+									<br>
+								</div>
+							</div>
+							<div ng-show="ways_to_disprove.length == 0">
+								<input type="radio" name="disprove"
+									ng-model="disprove_choice.id" value="-1">Cannot
+								Disprove
+							</div>
+							<br>
+							<button type="submit" class="button">Send Disprove
+								Choice</button>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div id="detectiveNotes" class="sidecomponents">
+				<h3 style="text-align: center;">Detective Notes</h3>
+
+				<p>
+					<b>Suspects:</b>
+				</p>
+				<div ng-repeat="s in suspects">
+					<input type="checkbox"> {{s.name}}
+				</div>
+				<hr>
+				<p>
+					<b>Weapons:</b>
+				</p>
+				<div ng-repeat="w in weapons">
+					<input type="checkbox"> {{w.name}}
+				</div>
+				<hr>
+
+				<p>
+					<b>Rooms:</b>
+				</p>
+				<div ng-repeat="r in rooms">
+					<input type="checkbox"> {{r.name}}
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+	<div id="gameOver" ng-show="end_game != undefined" class="mainpage">
+		<div class="maincontent wtext">
+			<h1>Game Over!</h1>
+			<h3>{{end_game}}</h3>
+		</div>
+	</div>
+
+	<!--  div>{{test}}</div -->
+</body>
+</html>
