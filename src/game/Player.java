@@ -4,16 +4,16 @@ import java.util.Vector;
 
 public class Player {
 	private int unique_id;
-	private int suspect_id; /*TODO Currently established in GameBoard*/
+	private String playerName;
 	private boolean active = false;
-	
+	private double owedToPot;
 	private Vector<Card> cards;
 	
-	public Player (int id, int s_id){
+	public Player (int id, String playerName){
 		unique_id = id;
-		suspect_id=s_id;
+		this.playerName = playerName;
 		active = true;
-		
+		owedToPot = 0;
 		cards = new Vector<Card>();
 	}
 	
@@ -30,7 +30,11 @@ public class Player {
 		return unique_id;
 	}
 	public int getSuspectId(){
-		return suspect_id;
+		return 0;
+	}
+	
+	public String getPlayerName(){
+		return playerName;
 	}
 	public boolean isActive(){
 		return active;

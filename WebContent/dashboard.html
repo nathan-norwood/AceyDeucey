@@ -2,7 +2,7 @@
 <html ng-app="clueless">
 <head>
 <meta charset="UTF-8">
-<title>Clue-Less Dashboard</title>
+<title>Acey Deucey</title>
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 
@@ -29,14 +29,14 @@
 
 		});
 	</script>
-	<div id="header" ng-show="!(game_id!= undefined && !game_in_lobby)">Clue-Less</div>
+	<div id="header" ng-show="!(game_id!= undefined && !game_in_lobby)">Acey Deucey</div>
 
 	<div id="gameSelect"
 		ng-show="game_id == undefined && !game_in_Lobby && end_game == undefined"
 		class="mainpage">
 		<div id="welcome" class="maincontent">
-			<h1 class="wtext">Welcome to Clue-Less!</h1>
-			<p class="wtext">Please select from the list of available games
+			<h1 class="wtext">Welcome to Acey Deucey!</h1>
+			<p class="wtext">Select from the list of available games
 				or create a new one.</p>
 			<div ng-show="games.length>0">
 				<br /> <label class="wtext">Available Games:</label>
@@ -63,11 +63,11 @@
 								<h4 class="modal-title">Join Game</h4>
 							</div>
 							<div class="modal-body">
-								<form ng-submit="joinGame(suspect)" onsubmit=>
-									<label>Choose Suspect: </label><select ng-model="suspect"
-										ng-options="s.id as s.name for s in avail_suspects"></select>
+								<form ng-submit="joinGame(player_name)" onsubmit=>
+									<label>Your Name: </label>
+									<input type ="text" ng-model="player_name">
 									<button id="joinSubmit" type="submit" class="btn btn-success"
-										ng-disabled="!suspect">Join</button>
+										ng-disabled="!player_name">Join</button>
 
 								</form>
 							</div>
@@ -77,7 +77,7 @@
 				</div>
 			</div>
 			<div ng-show="games.length==0" class="wtext" style="font-size: 20px;">
-				Oh no! There are no open games!<br /> <br />
+				There are no open games. Create one.<br /> <br />
 			</div>
 
 			<br />
@@ -95,17 +95,16 @@
 							<h4 class="modal-title">Create New Game</h4>
 						</div>
 						<div class="modal-body">
-							<form ng-submit="createGame(game_name, suspect)">
+							<form ng-submit="createGame(game_name, player_name)">
 								<table>
 									<tr>
 										<td><label>Name of Game: </label></td>
 										<td><input type="text" ng-model="game_name"><br>
-											<label></td>
+											</td>
 									</tr>
 									<tr>
-										<td>Your Character:</td>
-										<td></label><select ng-model="suspect"
-											ng-options="s.id as s.name for s in suspects"></select></td>
+										<td><label>Your Name:</label></td>
+										<td><input type ="text" ng-model="player_name"></td>
 									</tr>
 								</table>
 								<br> <br>
@@ -130,9 +129,9 @@
 				<p>You must wait for the host player to start the game...</p>
 			</div>
 
-			<h3>Suspects in the Lobby:</h3>
-			<div ng-repeat="s in suspects_in_lobby">
-				{{s.name}}<br />
+			<h3>Idiots in the Lobby:</h3>
+			<div ng-repeat="p in players_in_lobby">
+				{{p}}<br />
 			</div>
 
 			<div ng-show="player_is_host">

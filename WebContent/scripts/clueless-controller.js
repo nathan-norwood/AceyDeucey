@@ -12,11 +12,11 @@ var clueless = angular
 							$scope.selected_game = {
 								id : undefined
 							};
-							$scope.selected_suspect = undefined;
+							$scope.player = undefined;
 							$scope.game_id = undefined;
 							$scope.game_name = undefined;
 							$scope.game_in_lobby = false;
-							$scope.suspects_in_lobby = undefined;
+							$scope.players_in_lobby = undefined;
 							$scope.player_is_host = undefined;
 							$scope.options = undefined;
 							$scope.making_suggestion = false;
@@ -147,7 +147,7 @@ var clueless = angular
 							var images=[];
 							var loadedImgCnt=0;
 							/* Define WebSocket for Communication with Game */
-							var ws = $websocket('ws://localhost:8080/Clue-Less/socket');
+							var ws = $websocket('ws://localhost:8080/AceyDeucey/socket');
 							ws
 									.onMessage(function(event) {
 										$scope.test = event.data;
@@ -199,7 +199,7 @@ var clueless = angular
 										} else if (data.type == "LOBBY") {
 											$scope.game_id = data.gameId;
 											$scope.game_name = data.gameName;
-											$scope.suspects_in_lobby = data.suspects;
+											$scope.players_in_lobby = data.players;
 											if ($scope.player_is_host == undefined) {
 												$scope.player_is_host = data.isHost;
 											}
@@ -315,14 +315,14 @@ var clueless = angular
 							}
 							ws.send(setUp);
 
-							$scope.createGame = function(game_name, suspect) {
+							$scope.createGame = function(game_name, player_name) {
 								var newGame = {
 									type : "CREATE",
-									name : game_name,
-									suspect : suspect
+									game : game_name,
+									player : player_name
 								}
-								$scope.selected_suspect = suspect;
-
+								$scope.player = player_name;
+								console.log(newGame);
 								ws.send(newGame);
 
 							}
@@ -334,13 +334,13 @@ var clueless = angular
 								ws.send(request);
 							}
 
-							$scope.joinGame = function(suspect) {
+							$scope.joinGame = function(player_name) {
 								var joinedGame = {
 									type : "JOIN",
 									game : $scope.selected_game.id,
-									suspect : suspect
+									player : player_name
 								}
-								$scope.selected_suspect = suspect;
+								$scope.player_name= player_name
 								ws.send(joinedGame)
 
 							}

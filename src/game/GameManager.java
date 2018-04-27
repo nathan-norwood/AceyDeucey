@@ -38,18 +38,18 @@ public class GameManager {
 		return instance;
 	}
 
-	public void newGame(String name, int hostPlayerId, int suspectId) {
-		/* Create a new game */
+	/*public void newGame(String name, int hostPlayerId, int suspectId) {
+		 Create a new game 
 
-		/*
+		
 		 * TODO: Instead of creating the game and deleting it if the host
 		 * doesn't join, this function only creates a game with the host player
 		 * joined to it. Update later if time allows
-		 */
+		 
 		games.add(new Game(id, name, hostPlayerId, suspectId));
 		id++;
 
-	}
+	}*/
 
 	public Game getGameById(int id) {
 		/* When a specific game is selected, use it */
@@ -127,7 +127,8 @@ public class GameManager {
 		} else if (input.getString("type").equals("CREATE")) {
 			JsonObjectBuilder obuilder = Json.createObjectBuilder();
 			JsonArrayBuilder abuilder = Json.createArrayBuilder();
-			Game g = new Game(id++, input.getString("name"), playerSessions.get(session), input.getInt("suspect"));
+			System.out.println(message);
+			Game g = new Game(id++, input.getString("game"), playerSessions.get(session), input.getString("player"));
 			games.add(g);
 			obuilder.add("type", "LOBBY");
 			obuilder.add("gameId", g.getId());
@@ -135,10 +136,11 @@ public class GameManager {
 			obuilder.add("isHost", true);
 
 			for (Player p : g.getPlayers()) {
-				Suspect s = g.getGameBoard().getSuspectById(p.getSuspectId());
-				abuilder.add(Json.createObjectBuilder().add("id", s.getId()).add("name", s.getName()));
+				
+				abuilder.add(p.getPlayerName());
 			}
-			obuilder.add("suspects", abuilder);
+			obuilder.add("players", abuilder);
+			System.out.println("HERE");
 			// System.out.println(obuilder.build().toString());
 			try {
 				session.getBasicRemote().sendText(obuilder.build().toString());
@@ -172,17 +174,17 @@ public class GameManager {
 			JsonObjectBuilder obuilder = Json.createObjectBuilder();
 			JsonArrayBuilder abuilder = Json.createArrayBuilder();
 			Game g = games.get(Integer.parseInt(input.getString("game")));
-			g.addPlayer(playerSessions.get(session), input.getInt("suspect"));
+			g.addPlayer(playerSessions.get(session), input.getString("player"));
 			obuilder.add("type", "LOBBY");
 			obuilder.add("gameId", g.getId());
 			obuilder.add("gameName", g.getName());
 			obuilder.add("isHost", false);
 
 			for (Player p : g.getPlayers()) {
-				Suspect s = g.getGameBoard().getSuspectById(p.getSuspectId());
-				abuilder.add(Json.createObjectBuilder().add("id", s.getId()).add("name", s.getName()));
+				
+				abuilder.add(p.getPlayerName());
 			}
-			obuilder.add("suspects", abuilder);
+			obuilder.add("players", abuilder);
 			String msg = obuilder.build().toString();
 			try {
 				for (Player p : g.getPlayers()) {

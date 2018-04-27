@@ -40,7 +40,7 @@ public class Game {
 	private Player disproving_player = null;
 	private JsonObject suggestion;
 
-	public Game(int id, String n, int h_id, int s_id) {
+	public Game(int id, String n, int h_id, String playerName) {
 		logger.info("Game Constructor");
 		unique_id = id;
 		name = n;
@@ -52,7 +52,7 @@ public class Game {
 		players = new Vector<Player>();
 
 		available_suspects = board.getSuspects();
-		addPlayer(h_id, s_id);
+		addPlayer(h_id, playerName);
 
 		openGame = true;
 
@@ -144,29 +144,9 @@ public class Game {
 		return card;
 	}
 
-	public boolean addPlayer(int playerID, int suspectID) {
-		/*
-		 * TODO: what do we need to send in to add a player to this game? 1.
-		 * Player ID - where GameServelet keeps ID + socket map, and game keeps
-		 * ID + player object?
-		 */
-		if (players.size() < 6) {
-			players.add(new Player(playerID, suspectID));
-			available_suspects.remove(suspectID);
-			if (players.size() == 6) {
-				/* close game once max reached */
-				openGame = false;
-			}
-			return true;
-		} else {
-			return false;
-		}
-		/*
-		 * TODO: currently players are added in order of join making the host
-		 * the first player always - if we want them in a different order then
-		 * we need to do an additional step here.
-		 */
-
+	public void addPlayer(int playerID, String playerName) {
+		players.add(new Player(playerID, playerName));
+		
 	}
 
 	public void dealCards() {
