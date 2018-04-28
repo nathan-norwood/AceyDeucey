@@ -29,15 +29,16 @@
 
 		});
 	</script>
-	<div id="header" ng-show="!(game_id!= undefined && !game_in_lobby)">Acey Deucey</div>
+	<div id="header" ng-show="!(game_id!= undefined && !game_in_lobby)">Acey
+		Deucey</div>
 
 	<div id="gameSelect"
 		ng-show="game_id == undefined && !game_in_Lobby && end_game == undefined"
 		class="mainpage">
 		<div id="welcome" class="maincontent">
 			<h1 class="wtext">Welcome to Acey Deucey!</h1>
-			<p class="wtext">Select from the list of available games
-				or create a new one.</p>
+			<p class="wtext">Select from the list of available games or
+				create a new one.</p>
 			<div ng-show="games.length>0">
 				<br /> <label class="wtext">Available Games:</label>
 				<form ng-submit="getAvailableSuspects()">
@@ -64,8 +65,8 @@
 							</div>
 							<div class="modal-body">
 								<form ng-submit="joinGame(player_name)" onsubmit=>
-									<label>Your Name: </label>
-									<input type ="text" ng-model="player_name">
+									<label>Your Name: </label> <input type="text"
+										ng-model="player_name">
 									<button id="joinSubmit" type="submit" class="btn btn-success"
 										ng-disabled="!player_name">Join</button>
 
@@ -100,11 +101,11 @@
 									<tr>
 										<td><label>Name of Game: </label></td>
 										<td><input type="text" ng-model="game_name"><br>
-											</td>
+										</td>
 									</tr>
 									<tr>
 										<td><label>Your Name:</label></td>
-										<td><input type ="text" ng-model="player_name"></td>
+										<td><input type="text" ng-model="player_name"></td>
 									</tr>
 								</table>
 								<br> <br>
@@ -148,78 +149,36 @@
 		ng-show="game_id!= undefined &&  !game_in_lobby">
 		<h1>Dashboard for Game: {{game_name}}</h1>
 		<div class="container">
-			<div class="sidecomponents">
-				<div id=playerSuspect>
-					<p style="text-align: center;">My Character:
-						{{current_suspect.name}}</p>
-				</div>
-				<div id="cards">
-					<p style="text-align: center;">My Cards</p>
-					<div class="row">
 
-
-						<div ng-repeat="c in cards">
-							<div class="clearfix" ng-if="$index % 2 == 0"></div>
-							<div class="col-sm-5">
-								<img ng-src="{{c.img}}" class="cardImg" />
-							</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
 			<div class="midcomponents">
 
 				<div class="component">
 					<div id="messageBoard">
 						<div ng-repeat="m in msgs | reverse">{{m}}</div>
 					</div>
-					<div id="gameBoard">
-						<canvas id="canvas"></canvas>
-					</div>
+					<div id="gameBoard">Pot: {{pot}}
+					<br> My Current Bet: {{debt}}
+					<br> {{card1}}
+					<br>{{card2}}</div>
 				</div>
 
 				<!-- Not a modal yet -->
 				<div class="component">
 					<div id="turn" ng-show="is_turn">
 						<p>It's your Turn! Choose Your Move</p>
-						<div id="firstTurnOptions" ng-show="options != undefined">
-
-							<form ng-submit="getMove()">
-								<div ng-show=options.suggestion>
-									<input type="radio" name="move" ng-model="move_chosen.id"
-										value="-1">Make Suggestion in {{chosen_location.name}}
-								</div>
-								<div ng-repeat="l in options.locations">
-
-									<input type="radio" name="move" ng-model="move_chosen.id"
-										value="{{l.id}}" />Move To {{l.name}} <br>
-								</div>
-								<input type="radio" name="move" ng-model="move_chosen.id"
-									value="-2">Make Accusation <br>
-									<br>
-								<button type="submit" class="btn btn-success">Submit</button>
+						<div id="firstTurnOptions">
+							<button type="submit" ng-click="pass()" class="btn btn-success">Pass</button>
+							<form ng-submit="play(bet)">
+								<input type="number" ng-model="bet" max = "{{pot}}">
+								<button type="submit" class="btn btn-success">Play</button>
 							</form>
 
-							<div id="makeSuggestion" ng-show="making_suggestion">
-								<p>Make Suggestion</p>
-								<p>Room: {{chosen_location.name}}
-								<form ng-submit="submitMove(suspect, weapon)">
-									<label>Suspect: </label><select ng-model="suspect"
-										ng-options="s.id as s.name for s in suspects"
-										class="boardSelect"></select> <label>Weapon: </label><select
-										ng-model="weapon" ng-options="w.id as w.name for w in weapons"
-										class="boardSelect"></select>
-
-									<br>
-									<button type="submit" class="button">Make Suggestion</button>
-								</form>
-							</div>
 						</div>
 						<div ng-show="move_response != undefined">
 							{{move_response}}<br>
-							<div ng-show="move_response == 'Waiting for other players to disprove'">
-							 <img id = "hourGlass" src="images/hourglass.gif" />
+							<div
+								ng-show="move_response == 'Waiting for other players to disprove'">
+								<img id="hourGlass" src="images/hourglass.gif" />
 							</div>
 							<div
 								ng-show="move_response != 'Waiting for other players to disprove'">
@@ -238,9 +197,7 @@
 									ng-model="weapon" ng-options="w.id as w.name for w in weapons"
 									class="boardSelect"></select> <label>Room</label><select
 									ng-model="room" ng-options="r.id as r.name for r in rooms"
-									class="boardSelect"></select>
-
-								<br>
+									class="boardSelect"></select> <br>
 								<button type="submit" class="button">Submit Accusation</button>
 
 							</form>
@@ -274,33 +231,6 @@
 				</div>
 			</div>
 
-			<div id="detectiveNotes" class="sidecomponents">
-				<h3 style="text-align: center;">Detective Notes</h3>
-
-				<p>
-					<b>Suspects:</b>
-				</p>
-				<div ng-repeat="s in suspects">
-					<input type="checkbox"> {{s.name}}
-				</div>
-				<hr>
-				<p>
-					<b>Weapons:</b>
-				</p>
-				<div ng-repeat="w in weapons">
-					<input type="checkbox"> {{w.name}}
-				</div>
-				<hr>
-
-				<p>
-					<b>Rooms:</b>
-				</p>
-				<div ng-repeat="r in rooms">
-					<input type="checkbox"> {{r.name}}
-				</div>
-
-			</div>
-		</div>
 
 	</div>
 	<div id="gameOver" ng-show="end_game != undefined" class="mainpage">

@@ -8,13 +8,15 @@ public class Player {
 	private boolean active = false;
 	private double owedToPot;
 	private Vector<Card> cards;
+	private Game game;
 	
-	public Player (int id, String playerName){
+	public Player (int id, String playerName,Game game){
 		unique_id = id;
 		this.playerName = playerName;
 		active = true;
 		owedToPot = 0;
 		cards = new Vector<Card>();
+		this.game = game;
 	}
 	
 	
@@ -43,6 +45,14 @@ public class Player {
 		active = false;
 	}
 
+	public void addToPot(double amount){
+		owedToPot+=amount;
+		game.addToPot(amount);
+	}
+	
+	public double getAmountOwed(){
+		return owedToPot;
+	}
 	public Card getCardById(int id){
 		for(Card c:cards){
 			if(c.getId()==id){

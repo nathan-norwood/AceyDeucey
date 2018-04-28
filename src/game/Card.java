@@ -8,45 +8,46 @@ package game;
  */
 
 public class Card {
-	private GameComponentType type;
-	private int unique_id;
-	private String name;
+	private Suit suit;
+	private CardValue cardValue;
+	private int id;
 	
 	private static Integer cnt;
 	
-	public Card(GameComponentType t, int i, String n){
+	public Card(int i, Suit s, CardValue cardValue  ){
 		setId(i);
-		setType(t);
-		setName(n);
+		setSuit(s);
+		setCardValue(cardValue);
 	}
 
-	public GameComponentType getType() {
-		return type;
+	
+
+	private void setCardValue(CardValue cardValue) {
+		this.cardValue = cardValue;
+		
 	}
 
-	private void setType(GameComponentType type) {
-		this.type = type;
+
+
+	private void setSuit(Suit suit) {
+		this.suit = suit;
 	}
 
 	public int getId() {
-		return unique_id;
+		return id;
 	}
 
 	private void setId(int unique_id) {
-		this.unique_id = unique_id;
+		this.id = unique_id;
 	}
 
 	public String getName() {
-		return name;
+		return cardValue.name() + " of " +  suit.name();
 	}
 
-	private void setName(String name) {
-		this.name = name;
+	public CardValue getCardValue(){
+		return cardValue;
 	}
-
-	@Override
-	public String toString() {
-		return "Card [type=" + type + ", unique_id=" + unique_id + ", name=" + name + "]";
-	}
+	
 
 }

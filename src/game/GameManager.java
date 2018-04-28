@@ -156,12 +156,8 @@ public class GameManager {
 			// System.out.println(g.getAvailableSuspects());
 			JsonObjectBuilder obuilder = Json.createObjectBuilder();
 			JsonArrayBuilder abuilder = Json.createArrayBuilder();
-			obuilder.add("type", "AVAIL_SUSPECTS");
-			for (Entry<Integer, String> e : g.getAvailableSuspects().entrySet()) {
-				abuilder.add(Json.createObjectBuilder().add("id", e.getKey()).add("name", e.getValue()));
-
-			}
-			obuilder.add("suspects", abuilder);
+			
+		
 			// System.out.println(obuilder.build().toString());
 			try {
 				session.getBasicRemote().sendText(obuilder.build().toString());
@@ -204,26 +200,16 @@ public class GameManager {
 			Vector<Response> responses = g.startGame();
 			sendResponses(responses, g);
 
-		} else if (input.getString("type").equals("TURN")) {
+		} else if (input.getString("type").equals("PASS")) {
 			// Send 'game' with each msg.
 			Vector<Response> responses;
 			Game g = games.get(input.getInt("game"));
+			responses = g.currentPlayerPass();
+
 			
-
-			responses = g.processMoveResponse(input.getJsonObject("selection"));
 			sendResponses(responses, g);
 
-		} else if (input.getString("type").equals("DISPROVE")) {
-			Vector<Response> responses;
-			Game g = games.get(input.getInt("game_id"));
-			responses = g.processDisproveResponse(Integer.parseInt(input.getString("card")));
-			sendResponses(responses, g);
-
-		} else if (input.getString("type").equals("ACCUSE")) {
-			Vector<Response> responses;
-			Game g = games.get(input.getInt("game_id"));
-			responses = g.processAccusationReponse(input.getJsonArray("accusation"));
-			sendResponses(responses, g);
+		
 		} else {
 			System.out.println("Bad JSON" + input);
 		}
