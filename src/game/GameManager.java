@@ -210,7 +210,26 @@ public class GameManager {
 			sendResponses(responses, g);
 
 		
-		} else {
+		}else if (input.getString("type").equals("PLAY")) {
+			// Send 'game' with each msg.
+			Vector<Response> responses;
+			Game g = games.get(input.getInt("game"));
+			responses = g.currentPlayerPlay(input.getInt("bet"));
+
+			
+			sendResponses(responses, g);
+
+		
+		}else if (input.getString("type").equals("ACE_CHOICE")) {
+			// Send 'game' with each msg.
+			Vector<Response> responses;
+			Game g = games.get(input.getInt("game"));
+			responses = g.setAceAndFinishDeal(input.getString("isHigh"));
+			
+			sendResponses(responses, g);
+
+		
+		}else {
 			System.out.println("Bad JSON" + input);
 		}
 

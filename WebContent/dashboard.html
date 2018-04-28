@@ -165,8 +165,9 @@
 				<!-- Not a modal yet -->
 				<div class="component">
 					<div id="turn" ng-show="is_turn">
-						<p>It's your Turn! Choose Your Move</p>
-						<div id="firstTurnOptions">
+						<p>It's your Turn</p>
+						<div id="firstTurnOptions" ng-show = "making_choice">
+						<p>Play or Pass</p>
 							<button type="submit" ng-click="pass()" class="btn btn-success">Pass</button>
 							<form ng-submit="play(bet)">
 								<input type="number" ng-model="bet" max = "{{pot}}">
@@ -174,18 +175,15 @@
 							</form>
 
 						</div>
-						<div ng-show="move_response != undefined">
-							{{move_response}}<br>
-							<div
-								ng-show="move_response == 'Waiting for other players to disprove'">
-								<img id="hourGlass" src="images/hourglass.gif" />
-							</div>
-							<div
-								ng-show="move_response != 'Waiting for other players to disprove'">
-								<button type=button ng-click="endTurn()">End Turn</button>
-								<button type=button ng-click="makeAccusation()">Make
-									Accusation</button>
-							</div>
+						<div ng-show="high_or_low">
+						<p>Is your Ace High or Low?</p>
+							<form ng-submit = "setAceHigh(isHigh)">
+								<input type="radio" name="select_game" ng-model="isHigh"
+							value="true" /> <label class="wtext">High</label>
+							<input type="radio" name="select_game" ng-model="isHigh"
+							value="false" /> <label class="wtext">Low</label>
+								<button type="submit" class="btn btn-success">Submit</button>
+							</form>
 
 						</div>
 

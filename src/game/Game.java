@@ -108,9 +108,9 @@ public class Game {
 
 	
 	public Card getNextCard() {
-
+		//return card_deck.get(12); //getting the ACE of Spades
 		Random randomDeck = new Random();
-		/* TODO: validate nextInt doesnt over reach index */
+		// TODO: validate nextInt doesnt over reach index 
 		if (card_deck.size() > 0) {
 			int next = randomDeck.nextInt(card_deck.size());
 			Card card = card_deck.remove(next);
@@ -161,7 +161,7 @@ public class Game {
 	private Vector<Response> dealCurrentPlayer() {
 		JsonObjectBuilder obuilder = Json.createObjectBuilder();
 		Vector<Response> responses = new Vector<Response>();
-		responses.add(new Response(current_player.getUniqueId(), obuilder.add("type", "TURN").build()));
+		
 		
 		
 		obuilder.add("type", "MSG");
@@ -171,21 +171,71 @@ public class Game {
 		responses.add(new Response(0,obuilder.build()));
 		
 		card1 = getNextCard();
-		
+		card2 = getNextCard();
 		
 		if(card1.getCardValue() == CardValue.ACE){
-			//Check with player if they want high or low
+			obuilder.add("type", "CHECK_ACE");
+			responses.add(new Response(current_player.getUniqueId(), obuilder.build()));
+			
+			obuilder.add("type", "MSG");
+			obuilder.add("subject", current_player.getPlayerName());
+			obuilder.add("msg", " 's 1st card is an ACE..checking if they want high or low");
+			
+			responses.add(new Response(0, obuilder.build()));
+			return responses;
+			
 		}
-		card2 = getNextCard();
+		
+		
+		curHigh = Integer.max(card1.getCardValue().getCardValue(), card2.getCardValue().getCardValue());
+		curLow = Integer.min(card1.getCardValue().getCardValue(), card2.getCardValue().getCardValue());
+		
+		
+		
+		responses.addAll(finishDeal(new Vector<Response>()));
+		
+		
+		
+		return responses;
+	}
+	
+
+	public Vector<Response> setAceAndFinishDeal(String isHigh) {
+		String highOrLow;
+		if(isHigh.equals("true")){
+			curHigh = CardValue.ACE.getCardValue();
+			curLow = card2.getCardValue().getCardValue();
+			highOrLow = "HIGH..so high like Mo";
+		}else{
+			curLow = 1;
+			curHigh = card2.getCardValue().getCardValue();
+			highOrLow = "Low";
+		}
+		JsonObjectBuilder obuilder = Json.createObjectBuilder();
+		obuilder.add("type", "MSG");
+		obuilder.add("subject", current_player.getPlayerName());
+		obuilder.add("msg", " want their Ace to be " + highOrLow);
+		
+		Vector<Response> responses = new Vector<Response>();
+		responses.add(new Response(0,obuilder.build()));
+		
+		return finishDeal(responses);
+		
+	}
+	
+	private Vector<Response> finishDeal(Vector<Response> responses){
+		JsonObjectBuilder obuilder = Json.createObjectBuilder();
 		
 		obuilder.add("type", "CARDS");
 		obuilder.add("card1", card1.getName());
 		obuilder.add("card2", card2.getName());
 		
-		
 		responses.add(new Response(0,obuilder.build()));
 		
+		responses.add(new Response(current_player.getUniqueId(), obuilder.add("type", "TURN").build()));
 		
+		System.out.println("currentHigh: " + curHigh);
+		System.out.println("currentLow: " + curLow);
 		
 		return responses;
 	}
@@ -254,4 +304,16 @@ public class Game {
 		pot+=amount;
 		
 	}
+
+	/**
+	 * Player is playing
+	 * Check if they won and adjust pot accordingly
+	 * @param int1
+	 * @return
+	 */
+	public Vector<Response> currentPlayerPlay(int int1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -19,7 +19,8 @@ var clueless = angular
 							$scope.players_in_lobby = undefined;
 							$scope.player_is_host = undefined;
 							$scope.options = undefined;
-							$scope.making_suggestion = false;
+							$scope.making_choice = false;
+							$scope.high_or_low = false;
 							$scope.move_chosen = {
 								id : undefined
 							};
@@ -80,25 +81,15 @@ var clueless = angular
 										} else if (data.type == "TURN") {
 											
 											$scope.is_turn = true;
+											$scope.making_choice = true;
 											// setting chosen location to
 											// current location of suspect
 											// if they can Make Suggestion
 											// without moving
 											
-										} else if (data.type == "TURN2") {
-											if (data.suspect != null) {
-												var suspect = $scope
-														.getSuspectById(data.suspect)
-												$scope.move_response = data.notice
-														+ suspect.name;
-											} else {
-												if (data.notice != null) {
-													$scope.move_response = data.notice;
-												} else {
-													$scope.move_response = "Moved To Hallway";
-												}
-
-											}
+										} else if (data.type == "CHECK_ACE") {
+											$scope.is_turn = true;
+											$scope.high_or_low =true;
 
 								
 										} else if (data.type == "MSG") {
@@ -230,7 +221,7 @@ var clueless = angular
 								// Player in room at start of turn and makes
 								// suggestion
 								$scope.is_turn = false;
-								
+								$scope.making_choice = false;
 								var pass = {
 										type: "PASS",
 										game:  $scope.game_id
@@ -239,15 +230,15 @@ var clueless = angular
 								ws.send(pass);
 							}
 
-							$scope.sendDisprove = function() {
-								$scope.test = $scope.disprove_choice.id;
-								var disprove = {
-									type : "DISPROVE",
-									game_id : $scope.game_id,
-									card : $scope.disprove_choice.id
+							$scope.setAceHigh = function(isHigh) {
+								var aceChoice = {
+										type : "ACE_CHOICE",
+										game: $scope.game_id,
+										isHigh: isHigh
+									
 								}
-								$scope.suggestion_to_disprove = undefined;
-								ws.send(disprove);
+							$scope.high_or_low = false;
+								ws.send(aceChoice);
 							}
 
 							$scope.endTurn = function() {
