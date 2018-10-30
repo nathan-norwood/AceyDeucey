@@ -2,12 +2,15 @@ package game;
 
 import java.util.Vector;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
+
 public class Player {
 	private int unique_id;
 	private String playerName;
 	private boolean active = false;
 	private double owedToPot;
-	private Vector<Card> cards;
+	private double net;
 	private Game game;
 	
 	public Player (int id, String playerName,Game game){
@@ -15,19 +18,12 @@ public class Player {
 		this.playerName = playerName;
 		active = true;
 		owedToPot = 0;
-		cards = new Vector<Card>();
 		this.game = game;
 	}
 	
 	
 
-	public void addCard( Card c ){
-		cards.add(c);
-		
-	}
-	public Vector<Card> getCards() {
-		return cards;
-	}
+	
 	public int getUniqueId(){
 		return unique_id;
 	}
@@ -47,19 +43,28 @@ public class Player {
 
 	public void addToPot(double amount){
 		owedToPot+=amount;
+		net-=amount;
 		game.addToPot(amount);
 	}
 	
+	public void takeFromPot(double amount){
+		owedToPot = owedToPot - amount;
+		if(owedToPot <=0){
+			owedToPot = 0;
+		}
+		net+=amount;
+		game.subtractFromPot(amount);
+	}
+	
+	public Response getDebt(){
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		builder.add("type", "UPDATE_DEBT");
+		builder.add("debt", getAmountOwed());
+		builder.add("net", net);
+		return new Response(getUniqueId(),builder.build());
+	}
 	public double getAmountOwed(){
 		return owedToPot;
 	}
-	public Card getCardById(int id){
-		for(Card c:cards){
-			if(c.getId()==id){
-				return c;
-			}
-		}
-		return null;
-		
-	}
+	
 }

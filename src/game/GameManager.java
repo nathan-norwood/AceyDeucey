@@ -216,7 +216,7 @@ public class GameManager {
 			Game g = games.get(input.getInt("game"));
 			responses = g.currentPlayerPlay(input.getInt("bet"));
 
-			
+		
 			sendResponses(responses, g);
 
 		

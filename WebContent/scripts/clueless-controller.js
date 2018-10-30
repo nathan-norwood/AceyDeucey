@@ -218,15 +218,13 @@ var clueless = angular
 							$scope.pass = function() {
 								// send move back to server
 								var turn = null;
-								// Player in room at start of turn and makes
-								// suggestion
+
 								$scope.is_turn = false;
 								$scope.making_choice = false;
 								var pass = {
 										type: "PASS",
 										game:  $scope.game_id
 								}
-								
 								ws.send(pass);
 							}
 
@@ -241,15 +239,16 @@ var clueless = angular
 								ws.send(aceChoice);
 							}
 
-							$scope.endTurn = function() {
-								var end = {
-									type : "ACCUSE",
-									game_id : $scope.game_id,
-									accusation : []
+							$scope.play = function(bet) {
+								console.log("HERE");
+								var playBet = {
+									type : "PLAY",
+									game : $scope.game_id,
+									bet : bet
 								}
 								$scope.is_turn = false;
-								$scope.move_response = undefined;
-								ws.send(end);
+								console.log(playBet)
+								ws.send(playBet);
 							}
 
 							$scope.makeAccusation = function() {

@@ -110,14 +110,10 @@ public class Game {
 	public Card getNextCard() {
 		//return card_deck.get(12); //getting the ACE of Spades
 		Random randomDeck = new Random();
-		// TODO: validate nextInt doesnt over reach index 
-		if (card_deck.size() > 0) {
-			int next = randomDeck.nextInt(card_deck.size());
-			Card card = card_deck.remove(next);
-			return card;
-		} else {
-			return null;
-		}
+		int next = randomDeck.nextInt(card_deck.size());
+		Card card = card_deck.remove(next);
+		return card;
+		
 	}
 
 
@@ -169,7 +165,11 @@ public class Game {
 		obuilder.add("msg", " 's turn");
 		
 		responses.add(new Response(0,obuilder.build()));
-		
+		if(card_deck.size()<=3){
+			
+			initCardDeck();
+		}
+			
 		card1 = getNextCard();
 		card2 = getNextCard();
 		
@@ -205,11 +205,11 @@ public class Game {
 		if(isHigh.equals("true")){
 			curHigh = CardValue.ACE.getCardValue();
 			curLow = card2.getCardValue().getCardValue();
-			highOrLow = "HIGH..so high like Mo";
+			highOrLow = "HIGH";
 		}else{
 			curLow = 1;
 			curHigh = card2.getCardValue().getCardValue();
-			highOrLow = "Low";
+			highOrLow = "LOW";
 		}
 		JsonObjectBuilder obuilder = Json.createObjectBuilder();
 		obuilder.add("type", "MSG");
@@ -289,12 +289,9 @@ public class Game {
 
 	private Vector<Response> getPlayersDebt(){
 		Vector<Response> responses = new Vector<Response>();
-
-		JsonObjectBuilder builder = Json.createObjectBuilder();
 		for(Player p: players){
-			builder.add("type", "UPDATE_DEBT");
-			builder.add("debt", p.getAmountOwed());
-			responses.add(new Response(p.getUniqueId(),builder.build()));
+			
+			responses.add(p.getDebt());
 		}
 		
 		return responses;
@@ -304,6 +301,10 @@ public class Game {
 		pot+=amount;
 		
 	}
+	
+	public void subtractFromPot(double amount){
+		pot -= amount;
+	}
 
 	/**
 	 * Player is playing
@@ -311,9 +312,66 @@ public class Game {
 	 * @param int1
 	 * @return
 	 */
-	public Vector<Response> currentPlayerPlay(int int1) {
-		// TODO Auto-generated method stub
-		return null;
+	public Vector<Response> currentPlayerPlay(int bet) {
+		
+		Card thirdCard = this.getNextCard();
+		
+		
+		Vector<Response> responses = new Vector<Response>();
+		JsonObjectBuilder obuilder = Json.createObjectBuilder();
+		obuilder.add("type", "MSG");
+		obuilder.add("subject", current_player.getPlayerName());
+		obuilder.add("msg", " is Playing and Bets " + bet);
+		
+		
+		
+		responses.add(new Response(0,obuilder.build()));
+
+		
+
+		int thirdCardValue = thirdCard.getCardValue().getCardValue();
+		obuilder.add("type", "MSG");
+		obuilder.add("subject", current_player.getPlayerName());
+		obuilder.add("msg", " 's flip card is " + thirdCard.getName() + " with " +card1.getName() + " and " + card2.getName() + " showing");
+		responses.add(new Response(0,obuilder.build()));
+		String playerResult = "";
+		if(thirdCardValue > curLow && thirdCardValue<curHigh){
+			//Winner
+			if(bet == this.pot){
+				//Round over
+				obuilder.add("type", "MSG");
+				obuilder.add("subject", current_player.getPlayerName());
+				obuilder.add("msg", " 's wins the pot, round over");
+				return responses;
+			}else{
+				//subtract from pot and move to next player
+				this.current_player.takeFromPot(bet);
+				playerResult =  " wins " + bet + "pot is now " + pot;
+			}
+		}else if(thirdCardValue == curLow || thirdCardValue == curHigh){
+			this.current_player.addToPot(bet *2);
+			playerResult =  " POSTS! " + "Pot is now " + pot;
+		}else{
+			//Lose bet to pot
+			this.current_player.addToPot(bet);
+			playerResult = "loses. Pot its now + " + pot;
+		}
+		
+		obuilder.add("type", "MSG");
+		obuilder.add("subject", current_player.getPlayerName());
+		obuilder.add("msg", playerResult);
+		responses.add(new Response(0,obuilder.build()));
+		
+		obuilder.add("type", "UPDATE_POT");
+		obuilder.add("pot", pot);
+		responses.add(new Response(0,obuilder.build()));
+		
+		responses.add(current_player.getDebt());
+		current_player = nextPlayer();
+		
+		responses.addAll(dealCurrentPlayer());
+		
+		return responses;
 	}
 
 }
