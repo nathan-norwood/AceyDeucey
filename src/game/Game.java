@@ -20,7 +20,6 @@ public class Game {
 
 	private int unique_id;
 	private String name;
-	private GameBoard board;
 
 	private Vector<Card> card_deck;
 	private Vector<Card> case_file;
@@ -40,8 +39,6 @@ public class Game {
 	private boolean openGame = false;
 	private Player current_player;
 
-	private Player disproving_player = null;
-	private JsonObject suggestion;
 	
 	private int curLow;
 	private int curHigh;
@@ -53,7 +50,7 @@ public class Game {
 		logger.info("Game Constructor");
 		unique_id = id;
 		name = n;
-		board = new GameBoard();
+		
 		pot = 0;
 		initCardDeck(); 
 		
@@ -79,13 +76,6 @@ public class Game {
 		return players;
 	}
 
-	public HashMap<Integer, String> getAvailableSuspects() {
-		return available_suspects;
-	}
-
-	public GameBoard getGameBoard() {
-		return board;
-	}
 
 	public Player getCurrent_player() {
 		return current_player;
@@ -242,11 +232,7 @@ public class Game {
 
 	private String getCardSrcById(int id) {
 		String imgSrc = "images/cards/";
-		for (GameComponent gc : board.getGameComponenets()) {
-			if (gc.getId() == id) {
-				imgSrc += gc.getImgName();
-			}
-		}
+		//TODO
 
 		return imgSrc;
 	}
@@ -342,6 +328,7 @@ public class Game {
 				obuilder.add("type", "MSG");
 				obuilder.add("subject", current_player.getPlayerName());
 				obuilder.add("msg", " 's wins the pot, round over");
+				responses.add(new Response(0,obuilder.build()));
 				return responses;
 			}else{
 				//subtract from pot and move to next player

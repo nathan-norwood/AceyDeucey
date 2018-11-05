@@ -21,14 +21,14 @@ import com.google.common.collect.HashBiMap;
 public class GameManager {
 
 	private Vector<Game> games;
-	private GameBoard game_board;
+
 	private static GameManager instance;
 	private int id = 0;
 	private BiMap<Session, Integer> playerSessions = HashBiMap.create();
 
 	private GameManager() {
 		games = new Vector<Game>();
-		game_board = new GameBoard();
+
 	}
 
 	public static GameManager getInstance() {
@@ -91,32 +91,10 @@ public class GameManager {
 					abuilder.add(Json.createObjectBuilder().add("id", g.getId()).add("name", g.getName()));
 				}
 			}
+			System.out.println("Games"  + games.size());
 			obuilder.add("games", abuilder);
-			abuilder = Json.createArrayBuilder();
-
-			for (Suspect s : game_board.getSuspectSet()) {
-				abuilder.add(Json.createObjectBuilder().add("id", s.getId()).add("name", s.getName()).add("img",
-						s.getImgName()));
-
-			}
-			obuilder.add("suspects", abuilder);
-			abuilder = Json.createArrayBuilder();
-
-			for (Weapon w : game_board.getWeaponSet()) {
-				abuilder.add(Json.createObjectBuilder().add("id", w.getId()).add("name", w.getName()).add("img",
-						w.getImgName()));
-
-			}
-			obuilder.add("weapons", abuilder);
-			abuilder = Json.createArrayBuilder();
-
-			for (Location l : game_board.getRoomSet()) {
-				abuilder.add(Json.createObjectBuilder().add("id", l.getId()).add("name", l.getName()).add("img",
-						l.getImgName()));
-
-			}
-			obuilder.add("rooms", abuilder);
-
+			
+			
 			try {
 				session.getBasicRemote().sendText(obuilder.build().toString());
 			} catch (IOException e) {
@@ -140,7 +118,7 @@ public class GameManager {
 				abuilder.add(p.getPlayerName());
 			}
 			obuilder.add("players", abuilder);
-			System.out.println("HERE");
+			
 			// System.out.println(obuilder.build().toString());
 			try {
 				session.getBasicRemote().sendText(obuilder.build().toString());
@@ -150,22 +128,7 @@ public class GameManager {
 			}
 			// System.out.println(input.getInt("suspect"));
 
-		} else if (input.getString("type").equals("GET_SUSPECTS")) {
-			Game g = games.get(Integer.parseInt(input.getString("game")));
-
-			// System.out.println(g.getAvailableSuspects());
-			JsonObjectBuilder obuilder = Json.createObjectBuilder();
-			JsonArrayBuilder abuilder = Json.createArrayBuilder();
-			
 		
-			// System.out.println(obuilder.build().toString());
-			try {
-				session.getBasicRemote().sendText(obuilder.build().toString());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
 		} else if (input.getString("type").equals("JOIN")) {
 			JsonObjectBuilder obuilder = Json.createObjectBuilder();
 			JsonArrayBuilder abuilder = Json.createArrayBuilder();
