@@ -12,7 +12,6 @@ public class Card {
 	private CardValue cardValue;
 	private int id;
 	
-	private static Integer cnt;
 	
 	public Card(int i, Suit s, CardValue cardValue  ){
 		setId(i);
@@ -20,7 +19,14 @@ public class Card {
 		setCardValue(cardValue);
 	}
 
-	
+	public String getImagePath(){
+		
+		String valStr = (cardValue.getCardValue()<=10)? Integer.toString(cardValue.getCardValue()) : "" + cardValue.name().charAt(0);
+		String suitStr = "" + suit.name().charAt(0);
+		
+		return "images/cards/"+valStr+suitStr+".png";
+		
+	}
 
 	private void setCardValue(CardValue cardValue) {
 		this.cardValue = cardValue;

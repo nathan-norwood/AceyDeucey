@@ -217,8 +217,8 @@ public class Game {
 		JsonObjectBuilder obuilder = Json.createObjectBuilder();
 		
 		obuilder.add("type", "CARDS");
-		obuilder.add("card1", card1.getName());
-		obuilder.add("card2", card2.getName());
+		obuilder.add("card1", card1.getImagePath());
+		obuilder.add("card2", card2.getImagePath());
 		
 		responses.add(new Response(0,obuilder.build()));
 		
@@ -230,16 +230,8 @@ public class Game {
 		return responses;
 	}
 
-	private String getCardSrcById(int id) {
-		String imgSrc = "images/cards/";
-		//TODO
-
-		return imgSrc;
-	}
-
-	/* ask Player to disprove a suggestion */
-
 	
+
 	
 	public Vector<Response> currentPlayerPass(){
 		Vector<Response> responses = new Vector<Response>();

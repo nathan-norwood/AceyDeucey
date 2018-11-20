@@ -12,6 +12,7 @@ var clueless = angular
 							$scope.selected_game = {
 								id : undefined
 							};
+							$scope.games = undefined;
 							$scope.player = undefined;
 							$scope.game_id = undefined;
 							$scope.game_name = undefined;
@@ -21,21 +22,19 @@ var clueless = angular
 							$scope.options = undefined;
 							$scope.making_choice = false;
 							$scope.high_or_low = false;
-							$scope.move_chosen = {
-								id : undefined
-							};
-							$scope.disprove_choice = {
-								id : undefined
-							}
+							
 							$scope.card1 = undefined;
 							$scope.card2 = undefined;
+							$scope.playerCard = undefined;
 							
-							$scope.move_response = undefined;
-							$scope.suggestion_to_disrpove = undefined;
+							
 							$scope.msgs = [ "The game is started! " ];
 							$scope.is_turn = false;
 							$scope.making_accusation = false;
 							$scope.pot = undefined;
+							
+							
+							
 							var pos = [];
 						
 							/* Define WebSocket for Communication with Game */
@@ -47,13 +46,7 @@ var clueless = angular
 										var data = JSON.parse(event.data);
 										if (data.type == "SETUP") {
 											$scope.games = data.games;
-											$scope.suspects = data.suspects;
-											$scope.weapons = data.weapons;
-											$scope.rooms = data.rooms;
-											var x;
-										
-											
-											
+											console.log($scope.games);
 
 										} else if (data.type == "UPDATE_POT") {
 
@@ -68,6 +61,7 @@ var clueless = angular
 										} else if (data.type == "CARDS") {
 											$scope.card1 = data.card1;
 											$scope.card2 = data.card2;
+//											$scope.playerCard = data.playerCard;
 
 										} else if (data.type == "LOBBY") {
 											$scope.game_id = data.gameId;
@@ -163,7 +157,7 @@ var clueless = angular
 									game : $scope.selected_game.id,
 									player : player_name
 								}
-								$scope.player_name= player_name
+								$scope.player = player_name
 								ws.send(joinedGame)
 
 							}

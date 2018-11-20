@@ -124,7 +124,7 @@
 	<div id="gameLobby" ng-show="game_in_lobby && game_id != undefined"
 		class="mainpage">
 		<div id="gameDetails" class="maincontent wtext">
-			<h1>Welcome to the Lobby!</h1>
+			<h1>Welcome to the Lobby {{player}}!</h1>
 			<h3>Current Game: {{game_name}}</h3>
 			<div ng-show="!player_is_host">
 				<p>You must wait for the host player to start the game...</p>
@@ -137,7 +137,7 @@
 
 			<div ng-show="player_is_host">
 				<button type="button" class="btn btn-success"
-					ng-disabled="suspects_in_lobby.length < 2" ng-click="startGame()">Start
+					ng-disabled="players_in_lobby.length < 1" ng-click="startGame()">Start
 					Game</button>
 			</div>
 		</div>
@@ -147,7 +147,9 @@
 	</div>
 	<div id="gameDashboard" class="mainpage" style="padding: 20px;"
 		ng-show="game_id!= undefined &&  !game_in_lobby">
+		
 		<h1>Dashboard for Game: {{game_name}}</h1>
+		<h3>Player Name: {{player}}</h3>
 		<div class="container">
 
 			<div class="midcomponents">
@@ -161,7 +163,14 @@
 					<br> {{card1}}
 					<br>{{card2}}</div>
 				</div>
-
+				<div class = "component">
+				Cards In Play
+				<br>
+					<img ng-show = "card1 != undefined" ng-src="{{card1}}" class="cardImg" />
+					<img ng-show = "playerCard != undefined" ng-src="{{playerCard}}" class="cardImg" />
+					<img ng-show = "card2 != undefined"ng-src="{{card2}}" class="cardImg" />
+					
+				</div>
 				<!-- Not a modal yet -->
 				<div class="component">
 					<div id="turn" ng-show="is_turn">
@@ -170,7 +179,7 @@
 						<p>Play or Pass</p>
 							<button type="submit" ng-click="pass()" class="btn btn-success">Pass</button>
 							<form ng-submit="play(bet)">
-								<input type="number" ng-model="bet" max = "{{pot}}">
+								<input type="number" ng-model="bet" max = "{{pot}}" style="color:black">
 								<button type="submit" class="btn btn-success">Play</button>
 							</form>
 
@@ -184,51 +193,12 @@
 							value="false" /> <label class="wtext">Low</label>
 								<button type="submit" class="btn btn-success">Submit</button>
 							</form>
-
+s
 						</div>
 
-						<div ng-show="making_accusation">
-							<form ng-submit="submitAccusation(suspect, weapon, room)">
-								<label>Suspect</label><select ng-model="suspect"
-									ng-options="s.id as s.name for s in suspects"
-									class="boardSelect"></select> <label>Weapon</label><select
-									ng-model="weapon" ng-options="w.id as w.name for w in weapons"
-									class="boardSelect"></select> <label>Room</label><select
-									ng-model="room" ng-options="r.id as r.name for r in rooms"
-									class="boardSelect"></select> <br>
-								<button type="submit" class="button">Submit Accusation</button>
-
-							</form>
-						</div>
-
-					</div>
-					<div id="disproveSuggestion"
-						ng-show="suggestion_to_disprove != undefined">
-						<p>Suggestion to Disprove:</p>
-						{{suggestion_to_disprove.suspect.name}},
-						{{suggestion_to_disprove.weapon.name}},
-						{{suggestion_to_disprove.room.name}} <br>
-						<form ng-submit=sendDisprove()>
-							<div ng-show="ways_to_disprove.length > 0">
-								<div ng-repeat="w in ways_to_disprove">
-									<input type="radio" name="disprove"
-										ng-model="disprove_choice.id" value="{{w.id}}" /> {{w.name}}
-									<br>
-								</div>
-							</div>
-							<div ng-show="ways_to_disprove.length == 0">
-								<input type="radio" name="disprove"
-									ng-model="disprove_choice.id" value="-1">Cannot
-								Disprove
-							</div>
-							<br>
-							<button type="submit" class="button">Send Disprove
-								Choice</button>
-						</form>
 					</div>
 				</div>
 			</div>
-
 
 	</div>
 	<div id="gameOver" ng-show="end_game != undefined" class="mainpage">

@@ -9,7 +9,7 @@
 	background-color: #15260F;
 }
 #gameSelect {
-	background-image:url(../images/BackgroundBoard.jpg);
+	background-image:url(../images/PlayingCards.jpg);
 	height: 100vh;
 
 }
@@ -128,8 +128,8 @@ button{
 	
 }
 .cardImg{
-	height: 110%;
-	width: 110%;
+	height: 25%;
+	width: 25%;
 	
 }
 
