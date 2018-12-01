@@ -228,10 +228,20 @@ public class GameManager {
 		for (Response res : responses) {
 			if (res.getSession_id() == 0) {
 				sendToAllPlayers(res, g);
+				if(res.getMsgs().containsKey("playerCard")){	
+					System.out.println("Player Played need to pause");
+					try {
+						Thread.sleep(3500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			} else {
 				sendToSpecificPlayer(res);
 			}
 		}
+		
 
 	}
 }

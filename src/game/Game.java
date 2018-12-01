@@ -115,7 +115,7 @@ public class Game {
 
 
 	public Vector<Response> startGame() {
-		// Should never happen, validation on front end
+	
 
 		if (players.size() >= 2) {
 			openGame = false;
@@ -123,9 +123,25 @@ public class Game {
 			System.out.println("Game Started!");
 
 			JsonObjectBuilder obuilder = Json.createObjectBuilder();
+			if(current_player == null ){
+				for(Player p: players){
+					if(p.isActive()){
+						current_player = p;
+						break;
+					};
+				}
+			}else{
+				current_player = nextPlayer();
+			}
 			
-			current_player = players.get(0);			
-			players.forEach(p-> p.addToPot(1));
+			
+			for(Player p: players){
+				if(p.isActive()){
+					p.addToPot(1);
+				};
+			}
+			
+			
 			obuilder.add("type", "UPDATE_POT");
 			obuilder.add("pot", pot);
 			
@@ -144,6 +160,7 @@ public class Game {
 		}
 	}
 
+	
 	private Vector<Response> dealCurrentPlayer() {
 		JsonObjectBuilder obuilder = Json.createObjectBuilder();
 		Vector<Response> responses = new Vector<Response>();
@@ -172,6 +189,14 @@ public class Game {
 			obuilder.add("msg", " 's 1st card is an ACE..checking if they want high or low");
 			
 			responses.add(new Response(0, obuilder.build()));
+			
+			
+			
+			obuilder.add("type", "CARDS");
+			obuilder.add("card1", card1.getImagePath());
+			obuilder.add("card2","images/cards/red_back.png" );
+			
+			responses.add(new Response(0,obuilder.build()));
 			return responses;
 			
 		}
@@ -312,6 +337,13 @@ public class Game {
 		obuilder.add("subject", current_player.getPlayerName());
 		obuilder.add("msg", " 's flip card is " + thirdCard.getName() + " with " +card1.getName() + " and " + card2.getName() + " showing");
 		responses.add(new Response(0,obuilder.build()));
+		
+		obuilder.add("type", "CARDS");
+		obuilder.add("card1", card1.getImagePath());	
+		obuilder.add("card2", card2.getImagePath());
+		obuilder.add("playerCard", thirdCard.getImagePath());
+		responses.add(new Response(0,obuilder.build()));
+
 		String playerResult = "";
 		if(thirdCardValue > curLow && thirdCardValue<curHigh){
 			//Winner
@@ -321,6 +353,12 @@ public class Game {
 				obuilder.add("subject", current_player.getPlayerName());
 				obuilder.add("msg", " 's wins the pot, round over");
 				responses.add(new Response(0,obuilder.build()));
+				this.getCurrent_player().takeFromPot(bet);
+				responses.add(current_player.getDebt());
+				obuilder.add("type", "UPDATE_POT");
+				obuilder.add("pot", pot);
+				responses.add(new Response(0,obuilder.build()));
+				
 				return responses;
 			}else{
 				//subtract from pot and move to next player
@@ -341,6 +379,9 @@ public class Game {
 		obuilder.add("msg", playerResult);
 		responses.add(new Response(0,obuilder.build()));
 		
+
+		
+				
 		obuilder.add("type", "UPDATE_POT");
 		obuilder.add("pot", pot);
 		responses.add(new Response(0,obuilder.build()));
@@ -348,6 +389,7 @@ public class Game {
 		responses.add(current_player.getDebt());
 		current_player = nextPlayer();
 		
+
 		responses.addAll(dealCurrentPlayer());
 		
 		return responses;

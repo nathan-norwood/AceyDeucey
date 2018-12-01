@@ -1,5 +1,5 @@
-var clueless = angular
-		.module('clueless', [ 'angular-websocket' ])
+var aceydeucey = angular
+		.module('aceydeucey', [ 'angular-websocket' ])
 		.controller(
 				'ctrlr',
 				[
@@ -51,17 +51,18 @@ var clueless = angular
 										} else if (data.type == "UPDATE_POT") {
 
 											$scope.pot = data.pot
-
 											$scope.game_in_lobby = false;
 											
 
 										} else if (data.type == "UPDATE_DEBT") {
 											$scope.debt = data.debt;
+											$scope.net = data.net;
+											console.log(data.net);
 
 										} else if (data.type == "CARDS") {
 											$scope.card1 = data.card1;
 											$scope.card2 = data.card2;
-//											$scope.playerCard = data.playerCard;
+											$scope.playerCard = data.playerCard;
 
 										} else if (data.type == "LOBBY") {
 											$scope.game_id = data.gameId;
@@ -76,11 +77,7 @@ var clueless = angular
 											
 											$scope.is_turn = true;
 											$scope.making_choice = true;
-											// setting chosen location to
-											// current location of suspect
-											// if they can Make Suggestion
-											// without moving
-											
+									
 										} else if (data.type == "CHECK_ACE") {
 											$scope.is_turn = true;
 											$scope.high_or_low =true;
@@ -143,13 +140,7 @@ var clueless = angular
 								ws.send(newGame);
 
 							}
-							$scope.getAvailableSuspects = function() {
-								var request = {
-									type : "GET_SUSPECTS",
-									game : $scope.selected_game.id
-								}
-								ws.send(request);
-							}
+						
 
 							$scope.joinGame = function(player_name) {
 								var joinedGame = {
@@ -170,45 +161,7 @@ var clueless = angular
 								ws.send(start);
 							}
 
-							$scope.getMove = function() {
-
-								$scope.test = $scope.move_chosen.id;
-
-								if ($scope.move_chosen.id == -1) {
-									$scope.makingSuggetsion = true;
-									// Need to get the current location of the
-									// suspect somehow
-									var stateObj = $scope.board_state
-											.filter(function(s) {
-												return s.id == $scope.current_suspect.id;
-											});
-									$scope.test = stateObj.length;
-									$scope.chosen_location = $scope
-											.getRoomById(stateObj[0].r_id);
-
-									$scope.making_suggestion = true;
-								} else if ($scope.move_chosen.id == -2) {
-									// Making Accusation Not ready to handle
-									// that
-									$scope.makeAccusation();
-								} else {
-									$scope.chosen_location = $scope.options.locations
-											.filter(function(l) {
-												return l.id == $scope.move_chosen.id;
-											});
-									
-									$scope.chosen_location = $scope.chosen_location[0];
-									if ($scope.chosen_location.room) {
-										$scope.making_suggestion = true;
-									} else {
-										// call submitMove() with hallway
-
-										$scope.submitMove();
-									}
-
-								}
-							}
-
+							
 							$scope.pass = function() {
 								// send move back to server
 								var turn = null;
@@ -245,28 +198,7 @@ var clueless = angular
 								ws.send(playBet);
 							}
 
-							$scope.makeAccusation = function() {
-								$scope.making_accusation = true;
-
-							}
-							$scope.submitAccusation = function(suspect, weapon,
-									room) {
-								var acc = {
-									type : "ACCUSE",
-									game_id : $scope.game_id,
-									accusation : [ suspect, weapon, room ]
-								}
-
-								$scope.test = acc;
-								$scope.making_accusation = false;
-								$scope.is_turn = false;
-								ws.send(acc);
-							}
-							
-
-							
-
-						
+								
 							
 
 						}
