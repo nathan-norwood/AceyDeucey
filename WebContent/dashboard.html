@@ -147,7 +147,10 @@
 	</div>
 	<div id="gameDashboard" class="mainpage" style="padding: 20px;"
 		ng-show="game_id!= undefined &&  !game_in_lobby">
-
+		
+		<div id = "playAgain" ng-show = "pot==0 && player_is_host">
+			<button ng-click = "startGame()"> Play Another Round</button>
+		</div>
 		<h1>Dashboard for Game: {{game_name}}</h1>
 		<h3>Player Name: {{player}}</h3>
 		<br>Pot: {{pot}} 
@@ -179,6 +182,7 @@
 						<div id="firstTurnOptions" ng-show="making_choice">
 							<p>Play or Pass</p>
 							<button type="submit" ng-click="pass()" class="btn btn-success">Pass</button>
+							<button type = "submit" ng-click = "play(pot)"class="btn btn-success">POT!</button>
 							<form ng-submit="play(bet)">
 								<input type="number" ng-model="bet" max="{{pot}}"
 									style="color: black">
@@ -203,12 +207,7 @@
 			</div>
 
 		</div>
-		<div id="gameOver" ng-show="end_game != undefined" class="mainpage">
-			<div class="maincontent wtext">
-				<h1>Game Over!</h1>
-				<h3>{{end_game}}</h3>
-			</div>
-		</div>
+		
 
 		<!--  div>{{test}}</div -->
 </body>

@@ -100,7 +100,7 @@ var aceydeucey = angular
 										} else if (data.type = "ENDGAME") {
 											
 											
-											$scope.game_id = undefined
+											//$scope.game_id = undefined
 
 											//
 
