@@ -6,8 +6,8 @@ var aceydeucey = angular
 						'$scope',
 						'$websocket',
 						'$filter',
-						function($scope, $websocket, $filter) {
-
+						'$document',
+						function($scope, $websocket, $filter,$document) {
 							/* Globals */
 							$scope.selected_game = {
 								id : undefined
@@ -138,6 +138,7 @@ var aceydeucey = angular
 								$scope.player = player_name;
 								console.log(newGame);
 								ws.send(newGame);
+								$(document).attr("title", player_name);
 
 							}
 						
@@ -150,6 +151,7 @@ var aceydeucey = angular
 								}
 								$scope.player = player_name
 								ws.send(joinedGame)
+								$(document).attr("title", player_name);
 
 							}
 
