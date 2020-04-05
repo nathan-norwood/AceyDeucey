@@ -160,7 +160,8 @@ public class GameManager {
 			JsonObjectBuilder obuilder = Json.createObjectBuilder();
 			JsonArrayBuilder abuilder = Json.createArrayBuilder();
 			Game g = games.get(input.getInt("game"));
-			Vector<Response> responses = g.startGame();
+			boolean resetDebt = input.getBoolean("reset");
+			Vector<Response> responses = g.startGame(resetDebt);
 			sendResponses(responses, g);
 
 		} else if (input.getString("type").equals("PASS")) {

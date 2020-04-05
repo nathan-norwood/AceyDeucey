@@ -114,7 +114,7 @@ public class Game {
 	}
 
 
-	public Vector<Response> startGame() {
+	public Vector<Response> startGame(boolean resetDebts) {
 	
 
 		if (players.size() >= 2) {
@@ -140,7 +140,9 @@ public class Game {
 					p.clearNet();
 					p.clearOwedToPot();
 					p.addToPot(1);
-					
+					if(resetDebts){
+						p.resetDebts(players);
+					}
 				};
 			}
 			
@@ -150,7 +152,7 @@ public class Game {
 			
 			responses.add(new Response(0,obuilder.build()));
 			responses.addAll(getPlayersDebt());
-			
+			responses.addAll(getPlayerToPlayerDebts());
 			responses.addAll(dealCurrentPlayer());
 			
 
@@ -164,6 +166,12 @@ public class Game {
 	}
 
 	
+	private Collection<? extends Response> getPlayerToPlayerDebts() {
+		Vector<Response> responses = new Vector<Response>();
+		players.forEach(p -> responses.add(p.getOnGoingDebts()));
+		return responses;
+	}
+
 	private Vector<Response> dealCurrentPlayer() {
 		JsonObjectBuilder obuilder = Json.createObjectBuilder();
 		Vector<Response> responses = new Vector<Response>();
@@ -360,6 +368,7 @@ public class Game {
 				responses.add(current_player.getDebt());
 				obuilder.add("type", "UPDATE_POT");
 				obuilder.add("pot", pot);
+				
 				responses.add(new Response(0,obuilder.build()));
 				
 				return responses;

@@ -32,7 +32,7 @@ var aceydeucey = angular
 							$scope.is_turn = false;
 							$scope.making_accusation = false;
 							$scope.pot = undefined;
-							
+							$scope.playerDebts = undefined;
 							
 							
 							var pos = [];
@@ -97,7 +97,12 @@ var aceydeucey = angular
 												$scope.msgs.push(data.msg);
 											}
 
-										} else if (data.type = "ENDGAME") {
+										}else if(data.type = "ONGOING_DEBTS"){
+											$scope.playerDebts = data.debts;
+										} 
+										
+										
+										else if (data.type = "ENDGAME") {
 											
 											
 											//$scope.game_id = undefined
@@ -155,10 +160,11 @@ var aceydeucey = angular
 
 							}
 
-							$scope.startGame = function() {
+							$scope.startGame = function(resetDebt) {
 								var start = {
 									type : "START",
-									game : $scope.game_id
+									game : $scope.game_id,
+									reset : resetDebt
 								}
 								ws.send(start);
 							}

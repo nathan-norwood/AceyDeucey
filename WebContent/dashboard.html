@@ -137,7 +137,7 @@
 
 			<div ng-show="player_is_host">
 				<button type="button" class="btn btn-success"
-					ng-disabled="players_in_lobby.length < 1" ng-click="startGame()">Start
+					ng-disabled="players_in_lobby.length < 1" ng-click="startGame(true)">Start
 					Game</button>
 			</div>
 		</div>
@@ -149,14 +149,13 @@
 		ng-show="game_id!= undefined &&  !game_in_lobby">
 		
 		<div id = "playAgain" ng-show = "pot==0 && player_is_host">
-			<button ng-click = "startGame()"> Play Another Round</button>
+			<button ng-click = "startGame(false)"> Play Another Round</button>
 		</div>
-		<h1>Dashboard for Game: {{game_name}}</h1>
-		<h3>Player Name: {{player}}</h3>
-		<br>Pot: {{pot}} 
-		<br> My Current Bet: {{debt}}
-		<br> Net: {{net}}
-			
+		<h1>{{player}}'s Dashboard for Game {{game_name}}</h1>
+		<h1>Pot: {{pot}} </h1>
+<!-- 		<br> My Current Bet: {{debt}} -->
+		<h2> Net: {{net}}</h2>
+		{{playerDebts}}	
 		<div class="container">
 			
 			<br>
