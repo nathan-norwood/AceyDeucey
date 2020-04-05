@@ -185,7 +185,7 @@
 							<button type = "submit" ng-click = "play(pot)"class="btn btn-success">POT!</button>
 							<form ng-submit="play(bet)">
 								<input type="number" ng-model="bet" max="{{pot}}"
-									style="color: black">
+									style="color: black" required>
 								<button type="submit" class="btn btn-success">Play</button>
 							</form>
 
