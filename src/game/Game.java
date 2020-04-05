@@ -137,8 +137,10 @@ public class Game {
 			
 			for(Player p: players){
 				if(p.isActive()){
+					p.clearNet();
 					p.clearOwedToPot();
 					p.addToPot(1);
+					
 				};
 			}
 			

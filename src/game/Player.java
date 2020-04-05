@@ -40,8 +40,12 @@ public class Player {
 	public void setInactive(){
 		active = false;
 	}
+	public void clearNet(){
+		net = 0;
+	}
 	public void clearOwedToPot(){
 		owedToPot = 0;
+		
 	}
 
 	public void addToPot(double amount){
