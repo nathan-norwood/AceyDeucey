@@ -55,6 +55,10 @@ public class Player {
 		owedToPot = 0;
 		
 	}
+	
+	public int getNet(){
+		return (int) net;
+	}
 
 	public void addToPot(double amount){
 		owedToPot+=amount;
@@ -100,6 +104,31 @@ public class Player {
 		}
 	}
 	
+	public void payPlayer(Player otherPlayer, int amount){
+		adjustNet(amount);
+		int currentNetWithPlayer = this.onGoingDebts.get(otherPlayer);
+		currentNetWithPlayer = currentNetWithPlayer - amount;
+		this.onGoingDebts.put(otherPlayer, currentNetWithPlayer);
+		otherPlayer.receivePaymentFromPlayer(this, amount);
+		
+		
+		
+	}
+	
+	public void receivePaymentFromPlayer(Player otherPlayer, int amount){
+		adjustNet(-1 * amount);
+		
+		int currentNetWithPlayer = this.onGoingDebts.get(otherPlayer);
+		currentNetWithPlayer = currentNetWithPlayer + amount;
+		this.onGoingDebts.put(otherPlayer, currentNetWithPlayer);
+	}
+	
+	public void adjustNet(int amount){
+		this.net = net+amount;
+	}
+	public String toString(){
+		return playerName +": " + net;
+	}
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
