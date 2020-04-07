@@ -2,6 +2,7 @@ package game;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 
@@ -89,13 +90,23 @@ public class Player {
 	public Response getOnGoingDebts(){
 		JsonObjectBuilder builder = Json.createObjectBuilder();
 		builder.add("type", "ONGOING_DEBTS");
-		JsonObjectBuilder innerBuilder = Json.createObjectBuilder();
+		StringBuilder sBuilder = new StringBuilder();
 		onGoingDebts.entrySet().stream()
-		.forEach(entry -> innerBuilder.add(entry.getKey().getPlayerName(), entry.getValue()));
-		builder.add("debts", innerBuilder.build());
+		.forEach(entry -> sBuilder.append(getDebtRow(entry)));
+		
+		builder.add("debts", sBuilder.toString());
 		return new Response(getUniqueId(), builder.build());
 	}
 	
+	private String getDebtRow(Entry<Player,Integer> entry){
+		String playerName = entry.getKey().getPlayerName();
+		Integer p2pNet =  entry.getValue();
+		String netHtml = p2pNet.toString();
+		if(p2pNet >0){
+			netHtml = "+"+netHtml;
+		}
+		return playerName + ": " +  netHtml +" ";
+	}
 	
 	public void resetDebts(Vector<Player> players){
 		for(Player p: players){

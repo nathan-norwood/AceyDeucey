@@ -149,12 +149,19 @@
 		ng-show="game_id!= undefined &&  !game_in_lobby">
 		
 		<div id = "playAgain" ng-show = "pot==0 && player_is_host">
-			<button ng-click = "startGame(false)"> Play Another Round</button>
+			Pay out debts between this round?
+			<form ng-submit="startGame(reset)">
+				<input type="radio" name="play_again_reset" ng-model="reset" value="true" />
+					<label class="wtext">Yes</label> 
+				<input type="radio" name="play_again_reset" ng-model="reset" value="false" />
+					<label class="wtext">No</label>
+				<button type="submit">Play Again</button>
+			</form>
 		</div>
-		<h1>{{player}}'s Dashboard for Game {{game_name}}</h1>
+		<h2>{{player}}'s Dashboard for Game {{game_name}}</h2>
 		<h1>Pot: {{pot}} </h1>
 <!-- 		<br> My Current Bet: {{debt}} -->
-		<h2> Net: {{net}}</h2>
+		<h3>Round Net: {{net}}</h3>
 		{{playerDebts}}	
 		<div class="container">
 			

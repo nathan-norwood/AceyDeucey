@@ -160,11 +160,16 @@ var aceydeucey = angular
 
 							}
 
-							$scope.startGame = function(resetDebt) {
+							$scope.startGame = function(reset) {
+								console.log(reset);
+								var resetVal = false;
+								if(reset == "true" || reset == true ){
+									resetVal = true;
+								}
 								var start = {
 									type : "START",
 									game : $scope.game_id,
-									reset : resetDebt
+									reset : resetVal
 								}
 								ws.send(start);
 							}
