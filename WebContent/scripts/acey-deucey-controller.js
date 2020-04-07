@@ -6,8 +6,8 @@ var aceydeucey = angular
 						'$scope',
 						'$websocket',
 						'$filter',
-						function($scope, $websocket, $filter) {
-
+						'$document',
+						function($scope, $websocket, $filter,$document) {
 							/* Globals */
 							$scope.selected_game = {
 								id : undefined
@@ -32,7 +32,7 @@ var aceydeucey = angular
 							$scope.is_turn = false;
 							$scope.making_accusation = false;
 							$scope.pot = undefined;
-							
+							$scope.playerDebts = undefined;
 							
 							
 							var pos = [];
@@ -97,10 +97,15 @@ var aceydeucey = angular
 												$scope.msgs.push(data.msg);
 											}
 
-										} else if (data.type = "ENDGAME") {
+										}else if(data.type = "ONGOING_DEBTS"){
+											$scope.playerDebts = data.debts;
+										} 
+										
+										
+										else if (data.type = "ENDGAME") {
 											
 											
-											$scope.game_id = undefined
+											//$scope.game_id = undefined
 
 											//
 
@@ -138,6 +143,7 @@ var aceydeucey = angular
 								$scope.player = player_name;
 								console.log(newGame);
 								ws.send(newGame);
+								$(document).attr("title", player_name);
 
 							}
 						
@@ -150,13 +156,20 @@ var aceydeucey = angular
 								}
 								$scope.player = player_name
 								ws.send(joinedGame)
+								$(document).attr("title", player_name);
 
 							}
 
-							$scope.startGame = function() {
+							$scope.startGame = function(reset) {
+								console.log(reset);
+								var resetVal = false;
+								if(reset == "true" || reset == true ){
+									resetVal = true;
+								}
 								var start = {
 									type : "START",
-									game : $scope.game_id
+									game : $scope.game_id,
+									reset : resetVal
 								}
 								ws.send(start);
 							}

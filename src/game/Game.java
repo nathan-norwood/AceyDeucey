@@ -1,9 +1,12 @@
 package game;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -114,7 +117,7 @@ public class Game {
 	}
 
 
-	public Vector<Response> startGame() {
+	public Vector<Response> startGame(boolean resetDebts) {
 	
 
 		if (players.size() >= 2) {
@@ -137,7 +140,12 @@ public class Game {
 			
 			for(Player p: players){
 				if(p.isActive()){
+					p.clearNet();
+					p.clearOwedToPot();
 					p.addToPot(1);
+					if(resetDebts){
+						p.resetDebts(players);
+					}
 				};
 			}
 			
@@ -147,7 +155,7 @@ public class Game {
 			
 			responses.add(new Response(0,obuilder.build()));
 			responses.addAll(getPlayersDebt());
-			
+			responses.addAll(getPlayerToPlayerDebts());
 			responses.addAll(dealCurrentPlayer());
 			
 
@@ -161,6 +169,12 @@ public class Game {
 	}
 
 	
+	private Collection<? extends Response> getPlayerToPlayerDebts() {
+		Vector<Response> responses = new Vector<Response>();
+		players.forEach(p -> responses.add(p.getOnGoingDebts()));
+		return responses;
+	}
+
 	private Vector<Response> dealCurrentPlayer() {
 		JsonObjectBuilder obuilder = Json.createObjectBuilder();
 		Vector<Response> responses = new Vector<Response>();
@@ -357,8 +371,9 @@ public class Game {
 				responses.add(current_player.getDebt());
 				obuilder.add("type", "UPDATE_POT");
 				obuilder.add("pot", pot);
-				responses.add(new Response(0,obuilder.build()));
 				
+				responses.add(new Response(0,obuilder.build()));
+				responses.addAll(updatePlayerDebts());
 				return responses;
 			}else{
 				//subtract from pot and move to next player
@@ -395,4 +410,39 @@ public class Game {
 		return responses;
 	}
 
+	private Collection<? extends Response> updatePlayerDebts() {
+		List<Player> winningPlayers = players.stream().filter(p -> p.getNet() >0)
+				.sorted(Comparator.comparing(Player::getNet).reversed())
+		  .collect(Collectors.toList());
+		List<Player> losingPlayers = players.stream().filter(p -> p.getNet() <0)
+				.sorted(Comparator.comparing(Player::getNet))
+				 .collect(Collectors.toList());
+
+		
+		System.out.println("Winning:");
+		winningPlayers.stream().forEach(p->System.out.println(p));
+		
+		System.out.println("Losing");
+		losingPlayers.stream().forEach(p->System.out.println(p));
+		//TODO Figure out algorithm for paying thi sis wrong
+		for(Player loser: losingPlayers){
+			for(Player winner: winningPlayers){
+				//Winner already been paid out all of their winnings
+				if(winner.getNet() == 0){
+					continue;
+				}
+				int loserDebt = Math.abs(loser.getNet());
+				int amount = Math.min(loserDebt, winner.getNet());
+				loser.payPlayer(winner, amount);
+				//Loser out of money, go on to next loser
+				if(loser.getNet() == 0){
+					break;
+				}
+			}
+		}
+		
+		
+		
+		return getPlayerToPlayerDebts();
+	}
 }

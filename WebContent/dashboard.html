@@ -137,7 +137,7 @@
 
 			<div ng-show="player_is_host">
 				<button type="button" class="btn btn-success"
-					ng-disabled="players_in_lobby.length < 1" ng-click="startGame()">Start
+					ng-disabled="players_in_lobby.length < 1" ng-click="startGame(true)">Start
 					Game</button>
 			</div>
 		</div>
@@ -147,13 +147,22 @@
 	</div>
 	<div id="gameDashboard" class="mainpage" style="padding: 20px;"
 		ng-show="game_id!= undefined &&  !game_in_lobby">
-
-		<h1>Dashboard for Game: {{game_name}}</h1>
-		<h3>Player Name: {{player}}</h3>
-		<br>Pot: {{pot}} 
-		<br> My Current Bet: {{debt}}
-		<br> Net: {{net}}
-			
+		
+		<div id = "playAgain" ng-show = "pot==0 && player_is_host">
+			Pay out debts between this round?
+			<form ng-submit="startGame(reset)">
+				<input type="radio" name="play_again_reset" ng-model="reset" value="true" />
+					<label class="wtext">Yes</label> 
+				<input type="radio" name="play_again_reset" ng-model="reset" value="false" />
+					<label class="wtext">No</label>
+				<button type="submit">Play Again</button>
+			</form>
+		</div>
+		<h2>{{player}}'s Dashboard for Game {{game_name}}</h2>
+		<h1>Pot: {{pot}} </h1>
+<!-- 		<br> My Current Bet: {{debt}} -->
+		<h3>Round Net: {{net}}</h3>
+		{{playerDebts}}	
 		<div class="container">
 			
 			<br>
@@ -179,9 +188,10 @@
 						<div id="firstTurnOptions" ng-show="making_choice">
 							<p>Play or Pass</p>
 							<button type="submit" ng-click="pass()" class="btn btn-success">Pass</button>
+							<button type = "submit" ng-click = "play(pot)"class="btn btn-success">POT!</button>
 							<form ng-submit="play(bet)">
 								<input type="number" ng-model="bet" max="{{pot}}"
-									style="color: black">
+									style="color: black" required>
 								<button type="submit" class="btn btn-success">Play</button>
 							</form>
 
@@ -203,12 +213,7 @@
 			</div>
 
 		</div>
-		<div id="gameOver" ng-show="end_game != undefined" class="mainpage">
-			<div class="maincontent wtext">
-				<h1>Game Over!</h1>
-				<h3>{{end_game}}</h3>
-			</div>
-		</div>
+		
 
 		<!--  div>{{test}}</div -->
 </body>
